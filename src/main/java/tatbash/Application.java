@@ -8,8 +8,8 @@ import org.telegram.telegrambots.ApiContextInitializer;
 @EnableConfigurationProperties
 @SpringBootApplication
 public class Application {
-    public static void main(String[] args) {
-        ApiContextInitializer.init(); // https://github.com/rubenlagus/TelegramBots/wiki/FAQ#spring_boot_starter
-        SpringApplication.run(Application.class, args);
-    }
+  public static void main(String[] args) {
+    ApiContextInitializer.init();
+    SpringApplication.run(Application.class, args);
+  }
 }
