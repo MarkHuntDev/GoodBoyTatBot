@@ -32,7 +32,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
   @PostConstruct
   @SneakyThrows({TelegramApiRequestException.class, TelegramApiException.class})
-  public void selfRegister() {
+  public void registerBot() {
     new TelegramBotsApi(DefaultBotSession.class).registerBot(this);
   }
 
