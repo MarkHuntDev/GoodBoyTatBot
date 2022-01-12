@@ -1,4 +1,4 @@
-package tatbash.infrastructure.telegram;
+package tatbash.telegram;
 
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
