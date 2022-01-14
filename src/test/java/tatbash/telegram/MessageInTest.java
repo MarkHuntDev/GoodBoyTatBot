@@ -2,7 +2,6 @@ package tatbash.telegram;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -29,13 +28,13 @@ class MessageInTest {
 
     // then:
     assertThat(whenUpdateIsNull.hasMessage()).isFalse();
-    assertThat(whenUpdateIsNull.getText()).isNull();
+    assertThat(whenUpdateIsNull.text()).isNull();
 
     assertThat(whenMessageIsNull.hasMessage()).isFalse();
-    assertThat(whenMessageIsNull.getText()).isNull();
+    assertThat(whenMessageIsNull.text()).isNull();
 
     assertThat(whenMessageTextIsNull.hasMessage()).isFalse();
-    assertThat(whenMessageTextIsNull.getText()).isNull();
+    assertThat(whenMessageTextIsNull.text()).isNull();
   }
 
   @Test
@@ -48,8 +47,8 @@ class MessageInTest {
 
     // then:
     assertThat(messageWithNotNullText.hasMessage()).isTrue();
-    assertThat(messageWithNotNullText.getText()).isNotNull();
-    assertThat(messageWithNotNullText.getText()).isEmpty();
+    assertThat(messageWithNotNullText.text()).isNotNull();
+    assertThat(messageWithNotNullText.text()).isEmpty();
   }
 
   private Update messageWithNullText() {
