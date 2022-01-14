@@ -12,8 +12,8 @@ jobs:
     - name: Set up JDK 16
       uses: actions/setup-java@v2
       with:
-        java-version: '16'
-        distribution: 'adopt'
+        java-version: '17'
+        distribution: 'temurin'
         cache: maven
     - name: Build with Maven (checkstyle + spotbugs)
       run: mvn clean package checkstyle:check spotbugs:check
