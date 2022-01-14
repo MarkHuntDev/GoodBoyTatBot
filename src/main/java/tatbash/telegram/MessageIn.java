@@ -2,23 +2,7 @@ package tatbash.telegram;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class MessageIn {
-
-  private final boolean hasMessage;
-  private final String text;
-
-  private MessageIn(boolean hasMessage, String text) {
-    this.hasMessage = hasMessage;
-    this.text = text;
-  }
-
-  public boolean hasMessage() {
-    return hasMessage;
-  }
-
-  public String getText() {
-    return text;
-  }
+public record MessageIn(boolean hasMessage, String text) {
 
   public static Builder builder() {
     return new Builder();
