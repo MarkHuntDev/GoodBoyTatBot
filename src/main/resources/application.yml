@@ -7,3 +7,6 @@ yandex:
   cloud:
     folderId: ${YANDEX_CLOUD_FOLDER_ID}
     authorizationToken: ${YANDEX_CLOUD_AUTHORIZATION_TOKEN}
+
+app:
+  markers: ['#перевод', '#тәрҗемә']

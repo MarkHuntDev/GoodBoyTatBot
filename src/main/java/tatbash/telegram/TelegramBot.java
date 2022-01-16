@@ -4,30 +4,34 @@ import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import tatbash.infrastructure.config.TelegramBotProperties;
+import tatbash.translation.TranslationService;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Service
 public class TelegramBot extends TelegramLongPollingBot {
 
   private final TelegramBotProperties properties;
+  private final TranslationService service;
 
   @Override
   @SneakyThrows(TelegramApiException.class)
   public void onUpdateReceived(Update update) {
-    SendMessage response = new SendMessage();
-    response.setChatId(update.getMessage().getChatId().toString());
-    response.setText(update.getMessage().getText());
-    execute(response);
+    final var message = MessageIn
+        .builder()
+        .from(update)
+        .build();
+    if (message.exists()) {
+      execute(service.foo(update));
+    }
   }
 
   @PostConstruct
