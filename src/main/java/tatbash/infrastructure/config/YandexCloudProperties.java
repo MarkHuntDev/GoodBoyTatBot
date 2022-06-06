@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public record YandexCloudProperties(String folderId, String authorizationToken) {
   public YandexCloudProperties {
     if (StringUtils.isAnyBlank(folderId, authorizationToken)) {
-      throw new IllegalArgumentException("folderId and authorizationToken can't be null or empty");
+      throw new IllegalArgumentException("folderId or authorizationToken can't be null or empty");
     }
   }
 }

@@ -208,7 +208,9 @@ class UpdateUtilsTest {
 
   private static Stream<Arguments> candidatesWithAbsentTextAndWithoutErrorMessage() {
     return Stream.of(
-        Arguments.of((Update) null),
+        Arguments.of(
+            (Update) null
+        ),
         Arguments.of(
             new UpdateBuilder()
                 .setMessage(null)

@@ -14,7 +14,7 @@ class TelegramBotPropertiesTest {
   void should_throw_exception_when_blank_params(String name, String token) {
     assertThatThrownBy(() -> new TelegramBotProperties(name, token))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("name and token can't be null or empty");
+        .hasMessage("name or token can't be null or empty");
 
   }
 
