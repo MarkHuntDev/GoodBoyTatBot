@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public record TelegramBotProperties(String name, String token) {
   public TelegramBotProperties {
     if (StringUtils.isAnyBlank(name, token)) {
-      throw new IllegalArgumentException("name and token can't be null or empty");
+      throw new IllegalArgumentException("name or token can not be null or empty");
     }
   }
 }

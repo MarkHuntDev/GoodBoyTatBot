@@ -14,7 +14,7 @@ class YandexCloudPropertiesTest {
   void should_throw_exception_when_blank_params(String folderId, String authorizationToken) {
     assertThatThrownBy(() -> new YandexCloudProperties(folderId, authorizationToken))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("folderId and authorizationToken can't be null or empty");
+        .hasMessage("folderId or authorizationToken can't be null or empty");
 
   }
 
