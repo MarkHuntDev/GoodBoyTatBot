@@ -16,7 +16,7 @@ class ApplicationPropertiesTest {
   }
 
   @Test
-  void should_create_an_instance() {
+  void should_create_an_instance_successfully() {
     assertThat(new ApplicationProperties(Collections.emptySet()).markers())
         .isEmpty();
   }

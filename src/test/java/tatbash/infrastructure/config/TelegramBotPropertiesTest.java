@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class TelegramBotPropertiesTest {
 
   @ParameterizedTest
-  @MethodSource("nullParamsCandidates")
+  @MethodSource("illegalParamsCandidates")
   void should_throw_exception_when_any_param_is_illegal(String name,
                                                         String token,
                                                         Class<RuntimeException> exceptionClass,
@@ -22,7 +22,7 @@ class TelegramBotPropertiesTest {
         .hasMessage(exceptionMessage);
   }
 
-  private static Stream<Arguments> nullParamsCandidates() {
+  private static Stream<Arguments> illegalParamsCandidates() {
     return Stream.of(
         Arguments.of(null, "x", NullPointerException.class, "name can't be null"),
         Arguments.of("x", null, NullPointerException.class, "token can't be null"),
