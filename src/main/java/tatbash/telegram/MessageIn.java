@@ -1,76 +1,27 @@
 package tatbash.telegram;
 
-import static java.util.Collections.emptySet;
-import static java.util.Collections.unmodifiableSet;
-import static java.util.stream.Collectors.toSet;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static tatbash.telegram.UpdateUtils.extractChatId;
+import static tatbash.telegram.UpdateUtils.extractHashtags;
+import static tatbash.telegram.UpdateUtils.extractText;
 
-import java.util.Objects;
-import java.util.Set;
-import org.springframework.util.CollectionUtils;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
+import java.util.List;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public record MessageIn(boolean exists, String text, Set<String> markers) {
+public record MessageIn(Long chatId, String text, List<String> hashtags) {
 
-  public MessageIn(boolean exists, String text, Set<String> markers) {
-    this.exists = exists;
-    this.text = text;
-    this.markers = (markers == null ? emptySet() : unmodifiableSet(markers));
+  public MessageIn(Long chatId, String text, List<String> hashtags) {
+    this.chatId = requireNonNull(chatId, "chatId can't be null");
+    this.text = requireNonNull(text, "text can't be null");
+    this.hashtags = unmodifiableList(requireNonNull(hashtags, "hashtags can't be null"));
   }
 
-  @Override
-  public Set<String> markers() {
-    return unmodifiableSet(this.markers);
+  public List<String> hashtags() {
+    return unmodifiableList(this.hashtags);
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static class Builder {
-
-    private boolean exists;
-    private String text;
-    private Set<String> markers;
-
-    public Builder from(Update update) {
-      this.exists = messageExists(update);
-      if (!this.exists) {
-        return this;
-      }
-      this.text = extractText(update);
-      this.markers = extractMarkers(update);
-      return this;
-    }
-
-    public MessageIn build() {
-      return new MessageIn(this.exists, this.text, this.markers);
-    }
-
-    private boolean messageExists(Update update) {
-      return update != null
-          && update.getMessage() != null
-          && update.getMessage().getText() != null;
-    }
-
-    private String extractText(Update update) {
-      return update.getMessage().getText();
-    }
-
-    private Set<String> extractMarkers(Update update) {
-      if (CollectionUtils.isEmpty(update.getMessage().getEntities())) {
-        return emptySet();
-      }
-      return update.getMessage().getEntities()
-          .stream()
-          .filter(Objects::nonNull)
-          .filter(this::isHashtag)
-          .map(MessageEntity::getText)
-          .collect(toSet());
-    }
-
-    private boolean isHashtag(MessageEntity entity) {
-      return "hashtag".equals(entity.getType());
-    }
+  public static MessageIn of(Update update) {
+    return new MessageIn(extractChatId(update), extractText(update), extractHashtags(update));
   }
 }
