@@ -91,6 +91,16 @@ class FixtureUtils {
       return this;
     }
 
+    MessageEntityBuilder setOffset(Integer offset) {
+      this.entity.setOffset(offset);
+      return this;
+    }
+
+    MessageEntityBuilder setLength(Integer length) {
+      this.entity.setLength(length);
+      return this;
+    }
+
     MessageEntity build() {
       return this.entity;
     }

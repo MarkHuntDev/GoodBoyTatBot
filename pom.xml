@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.encoding}</project.reporting.outputEncoding>
 
-        <spring-boot.version>2.6.2</spring-boot.version>
+        <spring-boot.version>2.7.2</spring-boot.version>
 
     </properties>
     <dependencies>

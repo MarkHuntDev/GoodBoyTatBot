@@ -1,98 +1,77 @@
 package tatbash.telegram;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import tatbash.telegram.FixtureUtils.ChatBuilder;
+import tatbash.telegram.FixtureUtils.MessageBuilder;
+import tatbash.telegram.FixtureUtils.MessageEntityBuilder;
+import tatbash.telegram.FixtureUtils.UpdateBuilder;
 
 class MessageInTest {
 
-  @Test
-  void hasMessage_should_return_false_when_update_does_not_contain_message_text() {
-    // when:
-    final var whenUpdateIsNull = MessageIn
-        .builder()
-        .from(null)
-        .build();
+  @ParameterizedTest
+  @MethodSource("nullParamsCandidates")
+  void should_throw_exception_when_any_param_is_null(Long chatId,
+                                                     String text,
+                                                     List<String> hashtags,
+                                                     String exceptionMessage) {
+    assertThatThrownBy(() -> new MessageIn(chatId, text, hashtags))
+        .isInstanceOf(NullPointerException.class)
+        .hasMessage(exceptionMessage);
+  }
 
-    final var whenMessageIsNull = MessageIn
-        .builder()
-        .from(new Update())
-        .build();
-
-    final var whenMessageTextIsNull = MessageIn
-        .builder()
-        .from(messageWithNullText())
-        .build();
-
-    // then:
-    assertThat(whenUpdateIsNull.exists()).isFalse();
-    assertThat(whenUpdateIsNull.text()).isNull();
-
-    assertThat(whenMessageIsNull.exists()).isFalse();
-    assertThat(whenMessageIsNull.text()).isNull();
-
-    assertThat(whenMessageTextIsNull.exists()).isFalse();
-    assertThat(whenMessageTextIsNull.text()).isNull();
+  private static Stream<Arguments> nullParamsCandidates() {
+    return Stream.of(
+        Arguments.of(null, null, null, "chatId can't be null"),
+        Arguments.of(1L, null, null, "text can't be null"),
+        Arguments.of(1L, "text", null, "hashtags can't be null")
+    );
   }
 
   @Test
-  void hasMessage_should_return_true_when_update_contains_message_text() {
-    // when:
-    final var messageWithNotNullText = MessageIn
-        .builder()
-        .from(messageWithNonBlankText())
-        .build();
-
-    // then:
-    assertThat(messageWithNotNullText.exists()).isTrue();
-    assertThat(messageWithNotNullText.text()).isNotNull();
-    assertThat(messageWithNotNullText.text()).isEmpty();
-  }
-
-  @Test
-  void should_return_markers_with_hashtag_type() {
-    // when:
-    final var messageWithMarkers = MessageIn
-        .builder()
-        .from(messageWithNonBlankTextAndExistentMarker())
-        .build();
-
-    // then:
-    assertThat(messageWithMarkers.markers()).containsExactly("#marker");
-  }
-
-  private Update messageWithNullText() {
-    final var update = new Update();
-    update.setMessage(new Message());
-    return update;
-  }
-
-  private Update messageWithNonBlankText() {
-    final var update = new Update();
-    final var message = new Message();
-    message.setText("");
-    update.setMessage(message);
-    return update;
-  }
-
-  private Update messageWithNonBlankTextAndExistentMarker() {
-    final var update = messageWithNonBlankText();
-    update.getMessage().setText("@SomeUser#marker");
-    final var markerWithNullType = new MessageEntity();
-    markerWithNullType.setOffset(0);
-    markerWithNullType.setLength(9);
-    markerWithNullType.setType("mention");
-    markerWithNullType.setText("@SomeUser");
-    final var markerWithHashtagType = new MessageEntity();
-    markerWithHashtagType.setOffset(9);
-    markerWithHashtagType.setLength(7);
-    markerWithHashtagType.setType("hashtag");
-    markerWithHashtagType.setText("#marker");
-    update.getMessage().setEntities(List.of(markerWithNullType, markerWithHashtagType));
-    return update;
+  void should_create_an_instance_successfully() {
+    final var actual = MessageIn.of(
+        new UpdateBuilder()
+            .setMessage(
+                new MessageBuilder()
+                    .setChat(
+                        new ChatBuilder()
+                            .setId(1L)
+                            .build()
+                    )
+                    .setText("@UserExample#HashtagExample")
+                    .addMessageEntity(
+                        new MessageEntityBuilder()
+                            .setType("mention")
+                            .setText("@UserExample")
+                            .setOffset(0)
+                            .setLength(12)
+                            .build()
+                    )
+                    .addMessageEntity(
+                        new MessageEntityBuilder()
+                            .setType("hashtag")
+                            .setText("#HashtagExample")
+                            .setOffset(12)
+                            .setLength(15)
+                            .build()
+                    )
+                    .build()
+            )
+            .build()
+    );
+    assertThat(actual.chatId())
+        .isEqualTo(1L);
+    assertThat(actual.text())
+        .isEqualTo("@UserExample#HashtagExample");
+    assertThat(actual.hashtags())
+        .containsExactly("#HashtagExample");
   }
 }
