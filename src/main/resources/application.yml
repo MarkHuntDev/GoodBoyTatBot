@@ -5,6 +5,7 @@ telegram:
 
 yandex:
   cloud:
+    translationUrl: 'https://translate.api.cloud.yandex.net/translate/v2'
     folderId: ${YANDEX_CLOUD_FOLDER_ID}
     authorizationToken: ${YANDEX_CLOUD_AUTHORIZATION_TOKEN}
 
