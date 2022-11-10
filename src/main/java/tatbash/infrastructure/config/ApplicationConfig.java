@@ -5,14 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
+@EnableScheduling
 public class ApplicationConfig {
 
-  private final YandexCloudProperties properties;
+  private final YandexCloudTranslationProperties translationProperties;
+  private final YandexCloudTokenProperties tokenProperties;
 
   /**
    * <p>
@@ -23,7 +26,14 @@ public class ApplicationConfig {
   @Bean
   RestTemplate yandexTranslationRestTemplate(RestTemplateBuilder builder) {
     return builder
-        .rootUri(this.properties.translationUrl())
+        .rootUri(this.translationProperties.url())
+        .build();
+  }
+
+  @Bean
+  RestTemplate yandexTokenRestTemplate(RestTemplateBuilder builder) {
+    return builder
+        .rootUri(this.tokenProperties.url())
         .build();
   }
 }

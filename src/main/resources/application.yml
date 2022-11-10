@@ -5,9 +5,13 @@ telegram:
 
 yandex:
   cloud:
-    translationUrl: 'https://translate.api.cloud.yandex.net/translate/v2'
-    folderId: ${YANDEX_CLOUD_FOLDER_ID}
-    authorizationToken: ${YANDEX_CLOUD_AUTHORIZATION_TOKEN}
+    translation:
+      url: 'https://translate.api.cloud.yandex.net/translate/v2'
+      folderId: ${YANDEX_CLOUD_FOLDER_ID}
+    token:
+      url: 'https://iam.api.cloud.yandex.net/iam/v1'
+      authorizationToken: ${YANDEX_CLOUD_AUTHORIZATION_TOKEN}
+      delayBeforeRefreshInMillis: 10800000 # 3 hours
 
 app:
   markers: ['#перевод', '#тәрҗемә']
