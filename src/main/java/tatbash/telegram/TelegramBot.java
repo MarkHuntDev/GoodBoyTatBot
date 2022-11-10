@@ -1,5 +1,7 @@
 package tatbash.telegram;
 
+import static tatbash.telegram.UpdateUtils.messageTextExists;
+
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,12 +27,13 @@ public class TelegramBot extends TelegramLongPollingBot {
   @Override
   @SneakyThrows(TelegramApiException.class)
   public void onUpdateReceived(Update update) {
-    final var message = MessageIn
-        .builder()
-        .from(update)
-        .build();
-    if (message.exists()) {
-      execute(service.foo(update));
+    if (messageTextExists(update)) {
+      final var messageOut = service.translate(MessageIn.of(update));
+      // todo: мы можем получить какое-то сообщение из чата, но, при этом, никак
+      //       на него не среагировать. Поэтому никак в чат не отвечаем, если exists() == false.
+      if (messageOut.exists()) {
+        execute(messageOut.toSendMessage());
+      }
     }
   }
 

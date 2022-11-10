@@ -3,52 +3,45 @@ package tatbash.telegram;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import tatbash.telegram.FixtureUtils.ChatBuilder;
-import tatbash.telegram.FixtureUtils.MessageBuilder;
-import tatbash.telegram.FixtureUtils.MessageEntityBuilder;
-import tatbash.telegram.FixtureUtils.UpdateBuilder;
 
-class MessageInTest {
+class MessageOutTest {
 
   @ParameterizedTest
   @MethodSource("nullParamsCandidates")
   void should_throw_exception_when_any_param_is_null(Long chatId,
                                                      String text,
-                                                     Set<String> hashtags,
                                                      String exceptionMessage) {
-    assertThatThrownBy(() -> new MessageIn(chatId, text, hashtags))
+    assertThatThrownBy(() -> new MessageOut(chatId, text))
         .isInstanceOf(NullPointerException.class)
         .hasMessage(exceptionMessage);
   }
 
   private static Stream<Arguments> nullParamsCandidates() {
     return Stream.of(
-        Arguments.of(null, null, null, "chatId can't be null"),
-        Arguments.of(1L, null, null, "text can't be null"),
-        Arguments.of(1L, "text", null, "hashtags can't be null")
+        Arguments.of(null, null, "chatId can't be null"),
+        Arguments.of(1L, null, "text can't be null")
     );
   }
 
   @Test
   void should_create_an_instance_successfully() {
-    final var actual = MessageIn.of(
-        new UpdateBuilder()
+    final var actual = MessageOut.of(
+        new FixtureUtils.UpdateBuilder()
             .setMessage(
-                new MessageBuilder()
+                new FixtureUtils.MessageBuilder()
                     .setChat(
-                        new ChatBuilder()
+                        new FixtureUtils.ChatBuilder()
                             .setId(1L)
                             .build()
                     )
                     .setText("@UserExample#HashtagExample")
                     .addMessageEntity(
-                        new MessageEntityBuilder()
+                        new FixtureUtils.MessageEntityBuilder()
                             .setType("mention")
                             .setText("@UserExample")
                             .setOffset(0)
@@ -56,7 +49,7 @@ class MessageInTest {
                             .build()
                     )
                     .addMessageEntity(
-                        new MessageEntityBuilder()
+                        new FixtureUtils.MessageEntityBuilder()
                             .setType("hashtag")
                             .setText("#HashtagExample")
                             .setOffset(12)
@@ -71,7 +64,5 @@ class MessageInTest {
         .isEqualTo(1L);
     assertThat(actual.text())
         .isEqualTo("@UserExample#HashtagExample");
-    assertThat(actual.hashtags())
-        .containsExactly("#HashtagExample");
   }
 }
