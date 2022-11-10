@@ -7,7 +7,7 @@ import static tatbash.telegram.UpdateUtils.extractHashtags;
 import static tatbash.telegram.UpdateUtils.extractText;
 import static tatbash.telegram.UpdateUtils.messageTextExists;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -126,7 +126,7 @@ class UpdateUtilsTest {
     // given:
     final var expectedHashtag1 = "#hashtag1";
     final var expectedHashtag2 = "#hashtag2";
-    final var expectedHashtags = List.of(expectedHashtag1, expectedHashtag2);
+    final var expectedHashtags = Set.of(expectedHashtag1, expectedHashtag2);
     final var expectedEntityMessage1 = new MessageEntityBuilder()
         .setType("hashtag")
         .setText(expectedHashtag1)

@@ -1,11 +1,11 @@
 package tatbash.telegram;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.CollectionUtils;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -15,17 +15,17 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @UtilityClass
 class UpdateUtils {
 
-  static List<String> extractHashtags(Update update) {
+  static Set<String> extractHashtags(Update update) {
     final var message = nonNullMessage(update);
     if (CollectionUtils.isEmpty(message.getEntities())) {
-      return emptyList();
+      return emptySet();
     }
     return message.getEntities()
         .stream()
         .filter(Objects::nonNull)
         .filter(UpdateUtils::isHashtag)
         .map(MessageEntity::getText)
-        .collect(toList());
+        .collect(toSet());
   }
 
   private static boolean isHashtag(MessageEntity entity) {
