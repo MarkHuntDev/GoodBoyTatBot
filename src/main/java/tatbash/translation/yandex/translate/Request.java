@@ -1,4 +1,4 @@
-package tatbash.translation.yandex;
+package tatbash.translation.yandex.translate;
 
 import static java.util.Arrays.copyOf;
 import static java.util.Objects.requireNonNull;

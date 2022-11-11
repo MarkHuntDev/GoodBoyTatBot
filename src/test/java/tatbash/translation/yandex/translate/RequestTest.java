@@ -1,4 +1,4 @@
-package tatbash.translation.yandex;
+package tatbash.translation.yandex.translate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

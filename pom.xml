@@ -21,6 +21,7 @@
         <spring-boot.version>2.7.2</spring-boot.version>
 
     </properties>
+
     <dependencies>
 
         <!-- Core Dependencies -->
@@ -91,6 +92,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Utils -->
 
         <dependency>
@@ -157,11 +164,15 @@
                     </executions>
                 </plugin>
 
-                <!-- maven-surefire-plugin supports JUnit 5 starting with 2.22.0 version -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.0.0-M7</version>
+                    <!--<configuration>
+                        <includes>
+                            <include>IamTokenKeeperIntegrationTest.java</include>
+                        </includes>
+                    </configuration>-->
                 </plugin>
 
                 <plugin>
@@ -203,6 +214,9 @@
                             <version>4.5.3</version>
                         </dependency>
                     </dependencies>
+                    <configuration>
+                        <excludeFilterFile>spotbugs/filters/exclude_filters.xml</excludeFilterFile>
+                    </configuration>
                 </plugin>
 
             </plugins>
