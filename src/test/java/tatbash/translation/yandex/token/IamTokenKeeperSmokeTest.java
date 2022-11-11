@@ -14,9 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.MockServerRestTemplateCustomizer;
@@ -25,17 +25,45 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 import tatbash.infrastructure.config.ApplicationConfig;
 import tatbash.infrastructure.config.YandexCloudTokenProperties;
+import tatbash.infrastructure.smoketest.RestClientSmokeTest;
 
-@ActiveProfiles({"test"})
-@RestClientTest
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerAutoConfiguration")
-class IamTokenKeeperIntegrationTest {
+/**
+ * <p>
+ * This is non-trivial smoke test due to {@link Scheduled}
+ * annotation using (see {@link IamTokenKeeper#refreshToken()}).
+ * </p>
+ * </br>
+ * <p>
+ * Before making requests to {@link MockRestServiceServer}, mocks have to be defined by
+ * {@link MockRestServiceServer#expect(RequestMatcher)}. But using Spring Bean
+ * with {@link Scheduled} annotation leads to difficult controlling behaviour. When {@link IamTokenKeeper}
+ * bean created it sends http-request to a Mock Server immediately (before mocks are defined) and every time
+ * after defined interval. Therefore, when test is started to execute, mocks haven't defined yet.
+ * As a workaround Mock Server with mocks defining during Spring Bean initialization.
+ * </p>
+ * </br>
+ * <p>
+ *   There is a thread separated from the test which was ran by scheduler.
+ *   It's required to extinguish that separated thread after test completed.
+ *   For this purpose {@link DirtiesContext} used.
+ * </p>
+ */
+@ExtendWith(SpringExtension.class)
+@RestClientSmokeTest(
+    properties = {
+        "spring.autoconfigure.exclude=org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerAutoConfiguration"
+    }
+)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class IamTokenKeeperSmokeTest {
 
   @Autowired
   private MockRestServiceServer mockRestServiceServer;
@@ -84,12 +112,6 @@ class IamTokenKeeperIntegrationTest {
       final var customizer = new MockServerRestTemplateCustomizer();
       customizer.customize(this.restTemplate);
       final var server = customizer.getServer();
-      /*
-        TODO: 1. Leave comment here to explain why I had to init mock server
-                 during bean initialization due to scheduling.
-              2. When I run full build refreshToken calls 3 times instead of 2.
-                 Such behaviour should be fixed.
-       */
       final var expectedJsonRequest = """
               {
                 "yandexPassportOauthToken": "oauth-token"

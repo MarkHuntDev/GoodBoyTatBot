@@ -14,42 +14,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.MockServerRestTemplateCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import tatbash.infrastructure.config.ApplicationConfig;
-import tatbash.infrastructure.config.YandexCloudTranslationProperties;
+import tatbash.infrastructure.smoketest.RestClientSmokeTest;
 import tatbash.translation.yandex.token.IamTokenKeeper;
 
-/**
- * We should use {@link RestClientTest} annotation for testing and mocking {@link RestTemplate} requests.
- * See <a href="https://rieckpil.de/testing-your-spring-resttemplate-with-restclienttest/">this article</a> for detailed information.
- */
-@ActiveProfiles({"test"})
-@ExtendWith({
-    SpringExtension.class
-})
-@RestClientTest({
-    ApplicationConfig.class, YandexCloudTranslationProperties.class, YandexTranslateClient.class
-})
-class YandexTranslateClientIntegrationTest {
-
-  @Autowired
-  private YandexTranslateClient yandexTranslateClient;
+@ExtendWith(SpringExtension.class)
+@RestClientSmokeTest(
+    properties = {
+        "spring.autoconfigure.exclude=org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerAutoConfiguration"
+    }
+)
+class YandexTranslateClientSmokeTest {
 
   @MockBean
   private IamTokenKeeper tokenKeeper;
 
   @Autowired
-  @Qualifier("yandexTranslationRestTemplate")
-  private RestTemplate restTemplate;
+  private YandexTranslateClient yandexTranslateClient;
 
+  @Autowired
   private MockRestServiceServer mockRestServiceServer;
 
   @Test
@@ -102,14 +95,27 @@ class YandexTranslateClientIntegrationTest {
 
   @BeforeEach
   void setUp() {
-    final var customizer = new MockServerRestTemplateCustomizer();
-    customizer.customize(this.restTemplate);
-    this.mockRestServiceServer = customizer.getServer();
     this.mockRestServiceServer.reset();
   }
 
   @AfterEach
   void tearDown() {
     this.mockRestServiceServer.verify();
+  }
+
+  @TestConfiguration
+  @Import({ApplicationConfig.class, YandexTranslateClient.class})
+  static class TestConfig {
+
+    @Autowired
+    @Qualifier("yandexTranslationRestTemplate")
+    private RestTemplate restTemplate;
+
+    @Bean
+    MockRestServiceServer mockRestServiceServer() {
+      final var customizer = new MockServerRestTemplateCustomizer();
+      customizer.customize(this.restTemplate);
+      return customizer.getServer();
+    }
   }
 }
