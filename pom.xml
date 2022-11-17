@@ -139,7 +139,7 @@
             <dependency>
                 <groupId>org.telegram</groupId>
                 <artifactId>telegrambots</artifactId>
-                <version>5.2.0</version>
+                <version>6.3.0</version>
             </dependency>
 
         </dependencies>
