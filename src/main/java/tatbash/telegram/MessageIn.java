@@ -9,6 +9,9 @@ import static tatbash.telegram.UpdateUtils.extractText;
 import java.util.Set;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+/**
+ * Chat message representation.
+ */
 public record MessageIn(Long chatId, String text, Set<String> hashtags) {
 
   public MessageIn(Long chatId, String text, Set<String> hashtags) {
@@ -21,7 +24,11 @@ public record MessageIn(Long chatId, String text, Set<String> hashtags) {
     return unmodifiableSet(this.hashtags);
   }
 
-  public static MessageIn of(Update update) {
+  /**
+   * Safely converts {@link Update} to {@link MessageIn},
+   * performing null checks.
+   */
+  public static MessageIn from(Update update) {
     return new MessageIn(extractChatId(update), extractText(update), extractHashtags(update));
   }
 }

@@ -37,7 +37,7 @@ class MessageInTest {
 
   @Test
   void should_create_an_instance_successfully() {
-    final var actual = MessageIn.of(
+    final var actual = MessageIn.from(
         new UpdateBuilder()
             .setMessage(
                 new MessageBuilder()

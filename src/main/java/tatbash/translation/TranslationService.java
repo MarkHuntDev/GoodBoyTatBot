@@ -1,12 +1,14 @@
 package tatbash.translation;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import tatbash.infrastructure.config.ApplicationProperties;
+import tatbash.infrastructure.config.ApplicationProperties.LanguagePairProperty;
 import tatbash.telegram.MessageIn;
 import tatbash.telegram.MessageOut;
+import tatbash.translation.yandex.translate.YandexTranslateClient;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -14,28 +16,41 @@ import tatbash.telegram.MessageOut;
 public class TranslationService {
 
   private final ApplicationProperties properties;
+  private final YandexTranslateClient translateClient;
 
+  /**
+   * Translate via Yandex API.
+   */
   public MessageOut translate(MessageIn messageIn) {
-    return MessageOut.of(new Update());
+    final var hashtag = extractHashtag(messageIn);
+    if (hashtag.isEmpty()) {
+      return MessageOut.empty(messageIn.chatId());
+    }
+    final var languages = extractLanguages(hashtag.get());
+    if (languages.isEmpty()) {
+      return MessageOut.empty(messageIn.chatId());
+    }
+    final var textWithoutHashtag = messageIn.text().replaceAll(hashtag.get(), "");
+    final var translatedText = translateClient.translate(
+        languages.get().sourceLanguage(),
+        languages.get().targetLanguage(),
+        textWithoutHashtag.trim()
+    );
+    return new MessageOut(messageIn.chatId(), translatedText);
   }
 
-  // todo: Сюда приходит update
-  //       1. Нужно сделать DTO для Request и Response, and cover by tests
-  //          1.1 Нужно идти с конца, от запроса в API Yandex Translate, к наращиванию логики приложения.
-  //              Этого принципа нужно придерживаться ВСЕГДА (на работе и на pet-проектах), сначала делаешь
-  //              самый минимум, который выполняет то что тебе нужно, покрываешь тестами,
-  //              потом наращиваешь вокруг этой функциональности остальную логику слой за слоем, покрывая тестами,
-  //              пока не дойдёшь до взаимодействия с пользователем.
-  //       2. Проверяем в тексте наличие маркера
-  //          2.1 Нужен алгоритм для проверки наличия маркера
-  //       3. Если есть маркер #перевод, то выдираем текст для перевода
-  //          3.1 Нужен алгоритм для "выдирания" текста, исключая маркеры
-  //       4. Выдранный текст отправляем на перевод в translation.yandex
-  //          4.1 Чтобы делать запрос в translation.yandex, нужно отправлять
-  //              в заголовке Authorization IAM-токен, который "протухает"
-  //              каждые 12 часов (рекомендуется обновлять его чаще, например, раз в час)
-  //          4.2 Чтобы обновлять IAM-токен, нужен другой токен ("вечный")
-  //          4.3 Таким образом, получается, что нужен отдельный поток, который периодически
-  //              будет обновлять IAM-токен. Во время разработки, можно, пока, вручную обновлять.
-  //              Главное реализовать саму функциональность, а потом остальное докручивать.
+  private Optional<String> extractHashtag(MessageIn messageIn) {
+    return messageIn
+        .hashtags()
+        .stream()
+        .findFirst();
+  }
+
+  private Optional<LanguagePairProperty> extractLanguages(String hashtag) {
+    return properties
+        .hashtags()
+        .stream()
+        .filter(item -> item.hashtag().equals(hashtag))
+        .findFirst();
+  }
 }
