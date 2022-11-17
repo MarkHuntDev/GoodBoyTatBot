@@ -30,7 +30,14 @@ public class TranslationService {
     if (languages.isEmpty()) {
       return MessageOut.empty(messageIn.chatId());
     }
-    final var textWithoutHashtag = messageIn.text().replaceAll(hashtag.get(), "");
+    // todo: refactoring required
+    var textWithoutHashtag = messageIn.text().replaceAll(hashtag.get(), "");
+    if (textWithoutHashtag.isBlank() && messageIn.isReply()) {
+      textWithoutHashtag = messageIn.repliedText();
+    }
+    if (textWithoutHashtag.isBlank()) {
+      return MessageOut.empty(messageIn.chatId());
+    }
     final var translatedText = translateClient.translate(
         languages.get().sourceLanguage(),
         languages.get().targetLanguage(),

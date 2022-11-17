@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +27,13 @@ class UpdateUtils {
         .filter(UpdateUtils::isHashtag)
         .map(MessageEntity::getText)
         .collect(toSet());
+  }
+
+  static String extractRepliedText(Update update) {
+    return Optional
+        .ofNullable(nonNullMessage(update).getReplyToMessage())
+        .orElse(new Message())
+        .getText();
   }
 
   private static boolean isHashtag(MessageEntity entity) {

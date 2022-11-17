@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static tatbash.telegram.UpdateUtils.extractChatId;
 import static tatbash.telegram.UpdateUtils.extractHashtags;
+import static tatbash.telegram.UpdateUtils.extractRepliedText;
 import static tatbash.telegram.UpdateUtils.extractText;
 import static tatbash.telegram.UpdateUtils.messageTextExists;
 
@@ -36,10 +37,8 @@ class UpdateUtilsTest {
                 .build()
         )
         .build();
-
     // when:
     final var actualChatId = extractChatId(expectedUpdate);
-
     // then:
     assertThat(actualChatId)
         .isEqualTo(expectedChatId);
@@ -79,10 +78,8 @@ class UpdateUtilsTest {
                 .build()
         )
         .build();
-
     // when:
     final var actualChatId = extractText(expectedUpdate);
-
     // then:
     assertThat(actualChatId)
         .isEqualTo(expectedText);
@@ -143,10 +140,8 @@ class UpdateUtilsTest {
                 .build()
         )
         .build();
-
     // when:
     final var actualHashtags = extractHashtags(expectedUpdate);
-
     // then:
     assertThat(actualHashtags)
         .isEqualTo(expectedHashtags);
@@ -185,10 +180,8 @@ class UpdateUtilsTest {
                 .build()
         )
         .build();
-
     // when:
     final var exists = messageTextExists(expectedUpdate);
-
     // then:
     assertThat(exists)
         .isTrue();
@@ -198,11 +191,7 @@ class UpdateUtilsTest {
   @ParameterizedTest
   @MethodSource("candidatesWithAbsentTextAndWithoutErrorMessage")
   void should_return_false_when_update_does_not_contain_text(Update update) {
-    // when:
-    final var exists = messageTextExists(update);
-
-    // then:
-    assertThat(exists)
+    assertThat(messageTextExists(update))
         .isFalse();
   }
 
@@ -226,5 +215,23 @@ class UpdateUtilsTest {
                 .build()
         )
     );
+  }
+
+  @Test
+  void should_extract_text_of_replied_message() {
+    // given:
+    final var expectedRepliedText = "test text";
+    final var expectedUpdate = new UpdateBuilder()
+        .setMessage(
+            new MessageBuilder()
+                .setRepliedText(expectedRepliedText)
+                .build()
+        )
+        .build();
+    // when:
+    final var actualRepliedText = extractRepliedText(expectedUpdate);
+    // then:
+    assertThat(actualRepliedText)
+        .isEqualTo(expectedRepliedText);
   }
 }
