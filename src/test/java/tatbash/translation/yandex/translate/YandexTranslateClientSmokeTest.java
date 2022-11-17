@@ -53,8 +53,7 @@ class YandexTranslateClientSmokeTest {
           "sourceLanguageCode": "ru",
           "targetLanguageCode": "tt",
           "texts": [
-            "привет",
-            "мир"
+            "привет, мир"
           ],
           "folderId": "test-folder-id"
         }
@@ -64,10 +63,7 @@ class YandexTranslateClientSmokeTest {
         {
           "translations": [
             {
-              "text": "сәлам"
-            },
-            {
-              "text": "дөнья"
+              "text": "сәлам, дөнья"
             }
           ]
         }
@@ -85,12 +81,12 @@ class YandexTranslateClientSmokeTest {
         .thenReturn("test-iam-token");
 
     // when:
-    final var translations =
-        this.yandexTranslateClient.translate("ru", "tt", new String[] {"привет", "мир"});
+    final var translation =
+        this.yandexTranslateClient.translate("ru", "tt", "привет, мир");
 
     // then:
-    assertThat(translations)
-        .containsExactly("сәлам", "дөнья");
+    assertThat(translation)
+        .isEqualTo("сәлам, дөнья");
   }
 
   @BeforeEach

@@ -41,8 +41,7 @@ class YandexTranslateClientTest {
             new ResponseEntity<>(
                 new Response(
                     new Response.TranslationText[] {
-                        new Response.TranslationText("сәлам"),
-                        new Response.TranslationText("дөнья")
+                        new Response.TranslationText("сәлам, дөнья")
                     }
                 ),
                 HttpStatus.OK
@@ -53,11 +52,11 @@ class YandexTranslateClientTest {
 
     // when:
     final var translate = translateClient
-        .translate("ru", "tt", new String[] {"привет", "мир"});
+        .translate("ru", "tt", "привет, мир");
 
     // then:
     assertThat(translate)
-        .containsExactly("сәлам", "дөнья");
+        .isEqualTo("сәлам, дөнья");
     verify(this.restTemplate)
         .exchange(eq("/translate"), eq(HttpMethod.POST), any(HttpEntity.class), eq(Response.class));
   }
@@ -69,7 +68,7 @@ class YandexTranslateClientTest {
         .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
 
     // then:
-    assertThatThrownBy(() -> this.translateClient.translate("", "", new String[] {}))
+    assertThatThrownBy(() -> this.translateClient.translate("", "", ""))
         .isInstanceOf(NullPointerException.class)
         .hasMessage("response body can't be null");
     verify(this.restTemplate)

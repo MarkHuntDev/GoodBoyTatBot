@@ -14,4 +14,10 @@ yandex:
       delayBeforeRefreshInMillis: 10800000 # 3 hours
 
 app:
-  markers: ['#перевод', '#тәрҗемә']
+  hashtags:
+    - hashtag: '#перевод'
+      sourceLanguage: 'tt'
+      targetLanguage: 'ru'
+    - hashtag: '#тәрҗемә'
+      sourceLanguage: 'ru'
+      targetLanguage: 'tt'

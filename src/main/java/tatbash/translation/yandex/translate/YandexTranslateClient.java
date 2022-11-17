@@ -1,5 +1,7 @@
 package tatbash.translation.yandex.translate;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,22 +33,22 @@ public class YandexTranslateClient {
    *
    * @param sourceLanguageCode source language
    * @param targetLanguageCode target language
-   * @param texts              array of texts
-   * @return array of translated texts
+   * @param text               array of text
+   * @return array of translated text
    */
-  public String[] translate(String sourceLanguageCode, String targetLanguageCode, String[] texts) {
-    final var httpEntity = buildHttpEntity(sourceLanguageCode, targetLanguageCode, texts);
+  public String translate(String sourceLanguageCode, String targetLanguageCode, String text) {
+    final var httpEntity = buildHttpEntity(sourceLanguageCode, targetLanguageCode, text);
     final var response = requestTranslations(httpEntity);
     final var translations = extractTranslations(response);
     return Arrays.stream(translations)
         .map(TranslationText::text)
-        .toArray(String[]::new);
+        .collect(joining());
   }
 
-  private HttpEntity<Object> buildHttpEntity(String sourceLanguageCode, String targetLanguageCode, String[] texts) {
+  private HttpEntity<Object> buildHttpEntity(String sourceLanguageCode, String targetLanguageCode, String text) {
     return HttpEntityBuilder
         .builder()
-        .withBody(new Request(properties.folderId(), sourceLanguageCode, targetLanguageCode, texts))
+        .withBody(new Request(properties.folderId(), sourceLanguageCode, targetLanguageCode, new String[] {text}))
         .withHeader("Authorization", List.of("Bearer " + tokenKeeper.getIamToken()))
         .build();
   }

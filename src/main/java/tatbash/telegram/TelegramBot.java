@@ -28,9 +28,7 @@ public class TelegramBot extends TelegramLongPollingBot {
   @SneakyThrows(TelegramApiException.class)
   public void onUpdateReceived(Update update) {
     if (messageTextExists(update)) {
-      final var messageOut = service.translate(MessageIn.of(update));
-      // todo: мы можем получить какое-то сообщение из чата, но, при этом, никак
-      //       на него не среагировать. Поэтому никак в чат не отвечаем, если exists() == false.
+      final var messageOut = service.translate(MessageIn.from(update));
       if (messageOut.exists()) {
         execute(messageOut.toSendMessage());
       }

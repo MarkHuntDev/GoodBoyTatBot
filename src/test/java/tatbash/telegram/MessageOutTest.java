@@ -28,41 +28,34 @@ class MessageOutTest {
     );
   }
 
-  @Test
-  void should_create_an_instance_successfully() {
-    final var actual = MessageOut.of(
-        new FixtureUtils.UpdateBuilder()
-            .setMessage(
-                new FixtureUtils.MessageBuilder()
-                    .setChat(
-                        new FixtureUtils.ChatBuilder()
-                            .setId(1L)
-                            .build()
-                    )
-                    .setText("@UserExample#HashtagExample")
-                    .addMessageEntity(
-                        new FixtureUtils.MessageEntityBuilder()
-                            .setType("mention")
-                            .setText("@UserExample")
-                            .setOffset(0)
-                            .setLength(12)
-                            .build()
-                    )
-                    .addMessageEntity(
-                        new FixtureUtils.MessageEntityBuilder()
-                            .setType("hashtag")
-                            .setText("#HashtagExample")
-                            .setOffset(12)
-                            .setLength(15)
-                            .build()
-                    )
-                    .build()
-            )
-            .build()
+  @ParameterizedTest
+  @MethodSource("messageParamsCandidates")
+  void should_return_true_when_message_is_not_blank_and_false_when_it_is_blank(String text, boolean exists) {
+    assertThat(new MessageOut(1L, text).exists())
+        .isEqualTo(exists);
+  }
+
+  private static Stream<Arguments> messageParamsCandidates() {
+    return Stream.of(
+        Arguments.of("some text", true),
+        Arguments.of("", false),
+        Arguments.of(" ", false),
+        Arguments.of("  ", false)
     );
-    assertThat(actual.chatId())
-        .isEqualTo(1L);
-    assertThat(actual.text())
-        .isEqualTo("@UserExample#HashtagExample");
+  }
+
+  @Test
+  void should_successfully_create_send_message_object_from_message_out() {
+    final var sendMessage = new MessageOut(1L, "Message!").toSendMessage();
+    assertThat(sendMessage.getChatId())
+        .isEqualTo("1");
+    assertThat(sendMessage.getText())
+        .isEqualTo("Message!");
+  }
+
+  @Test
+  void should_always_return_message_out_with_empty_message() {
+    assertThat(MessageOut.empty(1L).exists())
+        .isFalse();
   }
 }

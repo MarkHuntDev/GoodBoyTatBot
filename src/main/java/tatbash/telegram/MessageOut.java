@@ -1,13 +1,12 @@
 package tatbash.telegram;
 
-import static tatbash.telegram.UpdateUtils.extractChatId;
-import static tatbash.telegram.UpdateUtils.extractText;
-
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
+/**
+ * Bot's answer message representation.
+ */
 public record MessageOut(Long chatId, String text) {
 
   public MessageOut {
@@ -26,7 +25,7 @@ public record MessageOut(Long chatId, String text) {
     return response;
   }
 
-  public static MessageOut of(Update update) {
-    return new MessageOut(extractChatId(update), extractText(update));
+  public static MessageOut empty(Long chatId) {
+    return new MessageOut(chatId, "");
   }
 }
