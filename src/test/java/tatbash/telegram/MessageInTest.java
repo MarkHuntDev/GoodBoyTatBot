@@ -73,5 +73,7 @@ class MessageInTest {
         .isEqualTo("@UserExample#HashtagExample");
     assertThat(actual.hashtags())
         .containsExactly("#HashtagExample");
+    assertThat(actual.isReply())
+        .isFalse();
   }
 }

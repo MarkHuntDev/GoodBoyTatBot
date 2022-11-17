@@ -51,6 +51,15 @@ class FixtureUtils {
       return this;
     }
 
+    MessageBuilder setRepliedText(String repliedText) {
+      this.message.setReplyToMessage(
+          new MessageBuilder()
+              .setText(repliedText)
+              .build()
+      );
+      return this;
+    }
+
     Message build() {
       this.message.setEntities(new ArrayList<>(this.entities));
       return this.message;

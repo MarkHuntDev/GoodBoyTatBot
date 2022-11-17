@@ -74,4 +74,7 @@ class YandexTranslateClientTest {
     verify(this.restTemplate)
         .exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Response.class));
   }
+
+  // todo: test cases:
+  //       1. when API returns bad request or internal server error response should be handled (https://cloud.yandex.ru/docs/translate/api-ref/errors-handling)
 }

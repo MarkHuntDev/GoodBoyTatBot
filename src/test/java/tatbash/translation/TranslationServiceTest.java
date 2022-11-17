@@ -3,6 +3,8 @@ package tatbash.translation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -59,5 +61,31 @@ class TranslationServiceTest {
         .isEqualTo(1L);
     assertThat(messageOut.text())
         .isEqualTo("text");
+  }
+
+  @Test
+  void when_hashtag_without_text_used_then_translation_should_not_be_performed() {
+    // when:
+    final var messageOut = service.translate(new MessageIn(1L, " #hashtag ", Set.of("#hashtag")));
+    // then:
+    verifyNoInteractions(translateClient);
+    assertThat(messageOut.exists())
+        .isFalse();
+  }
+
+  @Test
+  void when_replied_text_should_be_translated() {
+    // given:
+    when(translateClient.translate(eq("x"), eq("y"), eq("replied text")))
+        .thenReturn("translated replied text");
+    // when:
+    final var messageOut = service.translate(new MessageIn(1L, " #hashtag ", Set.of("#hashtag"), "replied text"));
+    // then:
+    verify(translateClient)
+        .translate("x", "y", "replied text");
+    assertThat(messageOut.exists())
+        .isTrue();
+    assertThat(messageOut.text())
+        .isEqualTo("translated replied text");
   }
 }
