@@ -1,7 +1,7 @@
 yandex:
   cloud:
     translation:
-      folderId: "test-folder-id"
+      folderId: 'test-folder-id'
     token:
-      authorization-token: "oauth-token"
+      authorization-token: 'oauth-token'
       delayBeforeRefreshInMillis: 300

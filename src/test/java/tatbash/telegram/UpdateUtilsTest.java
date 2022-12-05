@@ -8,6 +8,7 @@ import static tatbash.telegram.UpdateUtils.extractRepliedText;
 import static tatbash.telegram.UpdateUtils.extractText;
 import static tatbash.telegram.UpdateUtils.messageTextExists;
 
+import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -233,5 +234,16 @@ class UpdateUtilsTest {
     // then:
     assertThat(actualRepliedText)
         .isEqualTo(expectedRepliedText);
+  }
+
+  @Test
+  void should_has_private_constructor() throws NoSuchMethodException {
+    final var constructor = UpdateUtils.class.getDeclaredConstructor();
+    assertThat(Modifier.isPrivate(constructor.getModifiers()))
+        .isTrue();
+    constructor.setAccessible(true);
+    assertThatThrownBy(constructor::newInstance)
+        .hasRootCauseInstanceOf(UnsupportedOperationException.class)
+        .hasRootCauseMessage("This is a utility class and cannot be instantiated");
   }
 }

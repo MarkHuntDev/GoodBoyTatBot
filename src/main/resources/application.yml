@@ -1,7 +1,8 @@
 telegram:
   bot:
-    name: ${TELEGRAM_BOT_NAME}
-    token: ${TELEGRAM_BOT_TOKEN}
+    auth:
+      name: ${TELEGRAM_BOT_NAME}
+      token: ${TELEGRAM_BOT_TOKEN}
 
 yandex:
   cloud:

@@ -4,13 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import tatbash.infrastructure.config.ApplicationProperties;
-import tatbash.infrastructure.config.TelegramBotProperties;
+import tatbash.infrastructure.config.TelegramAuthProperties;
 import tatbash.infrastructure.config.YandexCloudTokenProperties;
 import tatbash.infrastructure.config.YandexCloudTranslationProperties;
 
 @EnableConfigurationProperties({
     ApplicationProperties.class,
-    TelegramBotProperties.class,
+    TelegramAuthProperties.class,
     YandexCloudTranslationProperties.class,
     YandexCloudTokenProperties.class
 })
