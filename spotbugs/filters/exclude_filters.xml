@@ -8,4 +8,9 @@
         <Field name="restTemplate"/>
         <Bug pattern="EI_EXPOSE_REP2"/>
     </Match>
+    <Match>
+        <Class name="tatbash.telegram.TranslationDelegator"/>
+        <Field name="executor"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 </FindBugsFilter>
