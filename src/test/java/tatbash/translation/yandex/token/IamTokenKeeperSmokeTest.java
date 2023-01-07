@@ -44,16 +44,16 @@ import tatbash.infrastructure.smoketest.RestClientSmokeTest;
  * <p>
  * Before making requests to {@link MockRestServiceServer}, mocks have to be defined by
  * {@link MockRestServiceServer#expect(RequestMatcher)}. But using Spring Bean
- * with {@link Scheduled} annotation leads to difficult controlling behaviour. When {@link IamTokenKeeper}
- * bean created it sends http-request to a Mock Server immediately (before mocks are defined) and every time
+ * with {@link Scheduled} annotation leads to difficult behaviour control. When {@link IamTokenKeeper}
+ * bean is created it sends http request to a Mock Server immediately (before mocks are defined) and every time
  * after defined interval. Therefore, when test is started to execute, mocks haven't defined yet.
- * As a workaround Mock Server with mocks defining during Spring Bean initialization.
+ * As a workaround Mock Server with mocks is being defined during Spring Bean initialization.
  * </p>
  * </br>
  * <p>
- *   There is a thread separated from the test which was ran by scheduler.
- *   It's required to extinguish that separated thread after test completed.
- *   For this purpose {@link DirtiesContext} used.
+ * There is a thread separated from the test which was ran by scheduler.
+ * It's required to extinguish that separated thread after test completed.
+ * For this purpose {@link DirtiesContext} used.
  * </p>
  */
 @ExtendWith(SpringExtension.class)

@@ -1,11 +1,9 @@
 package tatbash.translation;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tatbash.infrastructure.config.ApplicationProperties;
-import tatbash.infrastructure.config.ApplicationProperties.LanguagePairProperty;
 import tatbash.telegram.MessageIn;
 import tatbash.telegram.MessageOut;
 import tatbash.translation.yandex.translate.YandexTranslateClient;
@@ -16,48 +14,25 @@ import tatbash.translation.yandex.translate.YandexTranslateClient;
 public class TranslationService {
 
   private final ApplicationProperties properties;
-  private final YandexTranslateClient translateClient;
+  private final YandexTranslateClient client;
 
   /**
    * Translate via Yandex API.
    */
   public MessageOut translate(MessageIn messageIn) {
-    final var hashtag = extractHashtag(messageIn);
-    if (hashtag.isEmpty()) {
+    final var refined = new MessageRefiner(messageIn).getRefinedMessage();
+    if (refined.isEmpty()) {
       return MessageOut.empty(messageIn.chatId());
     }
-    final var languages = extractLanguages(hashtag.get());
+    final var languages = new LanguagePairFinder(messageIn, properties).find();
     if (languages.isEmpty()) {
       return MessageOut.empty(messageIn.chatId());
     }
-    // todo: refactoring required
-    var textWithoutHashtag = messageIn.text().replaceAll(hashtag.get(), "");
-    if (textWithoutHashtag.isBlank() && messageIn.isReply()) {
-      textWithoutHashtag = messageIn.repliedText();
-    }
-    if (textWithoutHashtag.isBlank()) {
-      return MessageOut.empty(messageIn.chatId());
-    }
-    final var translatedText = translateClient.translate(
+    final String translatedText = client.translate(
         languages.get().sourceLanguage(),
         languages.get().targetLanguage(),
-        textWithoutHashtag.trim()
+        refined.get()
     );
     return new MessageOut(messageIn.chatId(), translatedText);
-  }
-
-  private Optional<String> extractHashtag(MessageIn messageIn) {
-    return messageIn
-        .hashtags()
-        .stream()
-        .findFirst();
-  }
-
-  private Optional<LanguagePairProperty> extractLanguages(String hashtag) {
-    return properties
-        .hashtags()
-        .stream()
-        .filter(item -> item.hashtag().equals(hashtag))
-        .findFirst();
   }
 }

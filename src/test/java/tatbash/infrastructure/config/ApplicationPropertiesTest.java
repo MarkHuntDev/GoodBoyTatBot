@@ -27,7 +27,7 @@ class ApplicationPropertiesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("candidates")
+  @MethodSource("illegalParamsCandidates")
   void should_throw_exception_when_any_param_is_illegal(String hashtag, String sourceLanguage,
                                                         String targetLanguage, String message) {
     assertThatThrownBy(() -> new LanguagePairProperty(hashtag, sourceLanguage, targetLanguage))
@@ -35,7 +35,7 @@ class ApplicationPropertiesTest {
         .hasMessage(message);
   }
 
-  private static Stream<Arguments> candidates() {
+  private static Stream<Arguments> illegalParamsCandidates() {
     return Stream.of(
         Arguments.of(null, "y", "z", "hashtag can't be null or empty"),
         Arguments.of("x", null, "z", "sourceLanguage can't be null or empty"),
