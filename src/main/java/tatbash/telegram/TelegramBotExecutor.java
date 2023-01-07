@@ -30,7 +30,7 @@ public class TelegramBotExecutor extends TelegramLongPollingBot {
 
   @Override
   public void onUpdateReceived(Update update) {
-    delegator.translate(update);
+    delegator.translate(update, this);
   }
 
   @SneakyThrows(TelegramApiException.class)
