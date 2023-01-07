@@ -14,9 +14,8 @@ import tatbash.translation.TranslationService;
 public class TranslationDelegator {
 
   private final TranslationService service;
-  private final TelegramBotExecutor executor;
 
-  void translate(Update update) {
+  void translate(Update update, TelegramBotExecutor executor) {
     if (messageTextExists(update)) {
       final var messageOut = service.translate(MessageIn.from(update));
       if (messageOut.exists()) {
