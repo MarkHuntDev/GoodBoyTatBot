@@ -49,11 +49,9 @@ class YandexTranslateClientTest {
         );
     when(this.tokenKeeper.getIamToken())
         .thenReturn("iam-token");
-
     // when:
     final var translate = translateClient
         .translate("ru", "tt", "привет, мир");
-
     // then:
     assertThat(translate)
         .isEqualTo("сәлам, дөнья");
@@ -66,7 +64,6 @@ class YandexTranslateClientTest {
     // given:
     when(this.restTemplate.exchange(eq("/translate"), eq(HttpMethod.POST), any(HttpEntity.class), eq(Response.class)))
         .thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
-
     // then:
     assertThatThrownBy(() -> this.translateClient.translate("", "", ""))
         .isInstanceOf(NullPointerException.class)
@@ -74,7 +71,4 @@ class YandexTranslateClientTest {
     verify(this.restTemplate)
         .exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Response.class));
   }
-
-  // todo: test cases:
-  //       1. when API returns bad request or internal server error response should be handled (https://cloud.yandex.ru/docs/translate/api-ref/errors-handling)
 }

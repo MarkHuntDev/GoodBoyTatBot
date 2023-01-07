@@ -16,4 +16,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven (checkstyle + spotbugs)
-      run: mvn clean package checkstyle:check spotbugs:check
+      run: mvn clean verify -P full-build

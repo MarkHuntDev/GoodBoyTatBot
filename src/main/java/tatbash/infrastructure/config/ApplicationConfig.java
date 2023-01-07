@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
+import tatbash.infrastructure.rest.YandexTranslateErrorHandler;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class ApplicationConfig {
   RestTemplate yandexTranslationRestTemplate(RestTemplateBuilder builder) {
     return builder
         .rootUri(this.translationProperties.url())
+        .errorHandler(new YandexTranslateErrorHandler())
         .build();
   }
 

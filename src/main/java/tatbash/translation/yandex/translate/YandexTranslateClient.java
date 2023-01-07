@@ -46,9 +46,10 @@ public class YandexTranslateClient {
   }
 
   private HttpEntity<Object> buildHttpEntity(String sourceLanguageCode, String targetLanguageCode, String text) {
+    final var request = new Request(properties.folderId(), sourceLanguageCode, targetLanguageCode, new String[] {text});
     return HttpEntityBuilder
         .builder()
-        .withBody(new Request(properties.folderId(), sourceLanguageCode, targetLanguageCode, new String[] {text}))
+        .withBody(request)
         .withHeader("Authorization", List.of("Bearer " + tokenKeeper.getIamToken()))
         .build();
   }
