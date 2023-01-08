@@ -34,16 +34,16 @@ import org.springframework.test.web.client.response.DefaultResponseCreator;
 import org.springframework.web.client.RestTemplate;
 import tatbash.infrastructure.config.ApplicationConfig;
 import tatbash.infrastructure.exception.YandexTranslateException;
-import tatbash.infrastructure.smoketest.RestClientSmokeTest;
+import tatbash.infrastructure.integrationtest.RestClientIntegrationTest;
 import tatbash.translation.yandex.token.IamTokenKeeper;
 
 @ExtendWith(SpringExtension.class)
-@RestClientSmokeTest(
+@RestClientIntegrationTest(
     properties = {
         "spring.autoconfigure.exclude=org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerAutoConfiguration"
     }
 )
-class YandexTranslateClientSmokeTest {
+class YandexTranslateClientIntegrationTest {
 
   @MockBean
   private IamTokenKeeper tokenKeeper;

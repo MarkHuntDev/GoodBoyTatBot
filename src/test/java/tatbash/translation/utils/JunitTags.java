@@ -4,5 +4,5 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class JunitTags {
-  public static final String SMOKE_TEST_PROFILE = "smoke";
+  public static final String INTEGRATION_TEST_PROFILE = "integration-test";
 }
