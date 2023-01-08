@@ -100,19 +100,17 @@ class YandexTranslateClientSmokeTest {
 
   @ParameterizedTest
   @MethodSource("errorRequestsCandidates")
-  void should_throw_exception_when_unsuccessful_request(DefaultResponseCreator expectedResponse,
-                                                        String expectedMessage) {
+  void should_throw_exception_when_unsuccessful_request(DefaultResponseCreator response, String message) {
     // given:
     this.mockRestServiceServer
         .expect(requestTo("/translate"))
         .andExpect(method(HttpMethod.POST))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andRespond(expectedResponse);
-
+        .andRespond(response);
     // when:
     assertThatThrownBy(() -> yandexTranslateClient.translate("xx", "yy", "foo bar"))
         .isInstanceOf(YandexTranslateException.class)
-        .hasMessage(expectedMessage);
+        .hasMessage(message);
   }
 
   private static Stream<Arguments> errorRequestsCandidates() {

@@ -13,7 +13,7 @@ import tatbash.translation.utils.JunitTags;
 
 /**
  * <p>
- * {@link RestClientTest} annotation used for testing and mocking {@link RestTemplate} requests.
+ * {@link RestClientTest} annotation is used for testing and mocking {@link RestTemplate} requests.
  * </p>
  * <p>
  * See <a href="https://rieckpil.de/testing-your-spring-resttemplate-with-restclienttest/">an article</a>.

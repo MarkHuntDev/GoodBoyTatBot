@@ -37,7 +37,7 @@ import tatbash.infrastructure.smoketest.RestClientSmokeTest;
 
 /**
  * <p>
- * This is non-trivial smoke test due to {@link Scheduled}
+ * This is a non-trivial smoke test due to {@link Scheduled}
  * annotation using (see {@link IamTokenKeeper#refreshToken()}).
  * </p>
  * </br>
@@ -52,7 +52,7 @@ import tatbash.infrastructure.smoketest.RestClientSmokeTest;
  * </br>
  * <p>
  * There is a thread separated from the test which was ran by scheduler.
- * It's required to extinguish that separated thread after test completed.
+ * It has to be extinguished after test completed.
  * For this purpose {@link DirtiesContext} used.
  * </p>
  */
@@ -77,14 +77,10 @@ class IamTokenKeeperSmokeTest {
     await()
         .atMost(Durations.ONE_SECOND)
         .untilAsserted(() -> verify(tokenKeeper, atLeast(2)).refreshToken());
-
     // when:
-    final var token =
-        tokenKeeper.getIamToken();
-
+    final var token = tokenKeeper.getIamToken();
     // then:
-    assertThat(token)
-        .isEqualTo("iam-token");
+    assertThat(token).isEqualTo("iam-token");
   }
 
   @AfterEach
@@ -109,9 +105,7 @@ class IamTokenKeeperSmokeTest {
 
     @Bean
     MockRestServiceServer mockRestServiceServer() {
-      final var customizer = new MockServerRestTemplateCustomizer();
-      customizer.customize(this.restTemplate);
-      final var server = customizer.getServer();
+      final var server = getNewCustomizedMockServer(this.restTemplate);
       final var expectedJsonRequest = """
               {
                 "yandexPassportOauthToken": "oauth-token"
@@ -130,6 +124,12 @@ class IamTokenKeeperSmokeTest {
           .andExpect(content().json(expectedJsonRequest))
           .andRespond(withSuccess(expectedJsonResponse, MediaType.APPLICATION_JSON));
       return server;
+    }
+
+    private MockRestServiceServer getNewCustomizedMockServer(RestTemplate restTemplate) {
+      final var customizer = new MockServerRestTemplateCustomizer();
+      customizer.customize(restTemplate);
+      return customizer.getServer();
     }
   }
 }
