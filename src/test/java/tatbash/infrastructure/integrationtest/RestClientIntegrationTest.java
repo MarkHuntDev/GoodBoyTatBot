@@ -1,4 +1,4 @@
-package tatbash.infrastructure.smoketest;
+package tatbash.infrastructure.integrationtest;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -21,11 +21,11 @@ import tatbash.translation.utils.JunitTags;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Tag(JunitTags.SMOKE_TEST_PROFILE)
-@ActiveProfiles({"smoke-test"})
+@Tag(JunitTags.INTEGRATION_TEST_PROFILE)
+@ActiveProfiles({"integration-test"})
 @RestClientTest
 @TestPropertySource
-public @interface RestClientSmokeTest {
+public @interface RestClientIntegrationTest {
 
   /**
    * @see RestClientTest#value()

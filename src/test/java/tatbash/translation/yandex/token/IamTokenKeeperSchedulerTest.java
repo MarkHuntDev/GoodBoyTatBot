@@ -33,11 +33,11 @@ import org.springframework.test.web.client.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
 import tatbash.infrastructure.config.ApplicationConfig;
 import tatbash.infrastructure.config.YandexCloudTokenProperties;
-import tatbash.infrastructure.smoketest.RestClientSmokeTest;
+import tatbash.infrastructure.integrationtest.RestClientIntegrationTest;
 
 /**
  * <p>
- * This is a non-trivial smoke test due to {@link Scheduled}
+ * This is a non-trivial integration test due to {@link Scheduled}
  * annotation using (see {@link IamTokenKeeper#refreshToken()}).
  * </p>
  * </br>
@@ -57,13 +57,13 @@ import tatbash.infrastructure.smoketest.RestClientSmokeTest;
  * </p>
  */
 @ExtendWith(SpringExtension.class)
-@RestClientSmokeTest(
+@RestClientIntegrationTest(
     properties = {
         "spring.autoconfigure.exclude=org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerAutoConfiguration"
     }
 )
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class IamTokenKeeperSmokeTest {
+class IamTokenKeeperSchedulerTest {
 
   @Autowired
   private MockRestServiceServer mockRestServiceServer;
