@@ -1,4 +1,4 @@
-package tatbash.translation.utils;
+package tatbash.infrastructure.utils;
 
 import lombok.experimental.UtilityClass;
 
