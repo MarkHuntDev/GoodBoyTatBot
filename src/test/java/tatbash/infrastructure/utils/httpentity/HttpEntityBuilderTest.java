@@ -1,4 +1,4 @@
-package tatbash.translation.utils.httpentity;
+package tatbash.infrastructure.utils.httpentity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Test;
+import tatbash.translation.utils.httpentity.HttpEntityBuilder;
 import tatbash.translation.yandex.translate.Request;
 
 class HttpEntityBuilderTest {

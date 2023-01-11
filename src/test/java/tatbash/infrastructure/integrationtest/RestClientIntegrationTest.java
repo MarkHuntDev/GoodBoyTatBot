@@ -9,7 +9,7 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
-import tatbash.translation.utils.JunitTags;
+import tatbash.infrastructure.utils.JunitTags;
 
 /**
  * <p>

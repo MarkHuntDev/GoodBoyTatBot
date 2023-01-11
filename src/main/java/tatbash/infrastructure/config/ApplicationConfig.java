@@ -15,8 +15,9 @@ import tatbash.infrastructure.rest.YandexTranslateErrorHandler;
 @EnableScheduling
 public class ApplicationConfig {
 
-  private final YandexCloudTranslationProperties translationProperties;
+  private final YandexCloudTranslationProperties yandexTranslationProperties;
   private final YandexCloudTokenProperties tokenProperties;
+  private final GoogleTranslationProperties googleTranslationProperties;
 
   /**
    * <p>
@@ -27,7 +28,7 @@ public class ApplicationConfig {
   @Bean
   RestTemplate yandexTranslationRestTemplate(RestTemplateBuilder builder) {
     return builder
-        .rootUri(this.translationProperties.url())
+        .rootUri(this.yandexTranslationProperties.url())
         .errorHandler(new YandexTranslateErrorHandler())
         .build();
   }
@@ -36,6 +37,13 @@ public class ApplicationConfig {
   RestTemplate yandexTokenRestTemplate(RestTemplateBuilder builder) {
     return builder
         .rootUri(this.tokenProperties.url())
+        .build();
+  }
+
+  @Bean
+  RestTemplate googleTranslationRestTemplate(RestTemplateBuilder builder) {
+    return builder
+        .rootUri(this.googleTranslationProperties.url())
         .build();
   }
 }
