@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static tatbash.infrastructure.utils.TestUtils.readString;
 import static tatbash.translation.utils.Utils.quote;
@@ -87,6 +88,24 @@ class GoogleTranslateClientIntegrationTest {
         Arguments.of("[{}]", "tt", "ru", "Text example 2", "firstNode is not an array"),
         Arguments.of("[[{}]]", "ru", "tt", "Text example 3", "secondNode is not an array")
     );
+  }
+
+  @Test
+  void should_throw_exception_when_unsuccessful_request() {
+    // given:
+    mockRestServiceServer
+        .expect(method(HttpMethod.POST))
+        .andExpect(content().formData(params("xx", "yy", "\"foo bar\"")))
+        .andRespond(withServerError().body("unknown error occurred"));
+    // when:
+    assertThatThrownBy(() -> translateClient.translate("xx", "yy", "foo bar"))
+        .isInstanceOf(GoogleTranslateException.class)
+        .hasMessage("""
+            Google API error:
+            HTTP Status: 500
+            Response body:
+            unknown error occurred
+            """);
   }
 
   /**

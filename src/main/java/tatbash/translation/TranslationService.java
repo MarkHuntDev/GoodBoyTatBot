@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import tatbash.infrastructure.config.ApplicationProperties;
 import tatbash.telegram.MessageIn;
 import tatbash.telegram.MessageOut;
+import tatbash.translation.google.GoogleTranslateClient;
 import tatbash.translation.yandex.translate.YandexTranslateClient;
 
 @Slf4j
@@ -14,7 +15,8 @@ import tatbash.translation.yandex.translate.YandexTranslateClient;
 public class TranslationService {
 
   private final ApplicationProperties properties;
-  private final YandexTranslateClient client;
+  private final YandexTranslateClient yandexTranslateClient;
+  private final GoogleTranslateClient googleTranslateClient;
 
   /**
    * Translate via Yandex API.
@@ -28,11 +30,20 @@ public class TranslationService {
     if (languages.isEmpty()) {
       return MessageOut.empty(messageIn.chatId());
     }
-    final String translatedText = client.translate(
-        languages.get().sourceLanguage(),
-        languages.get().targetLanguage(),
-        refined.get()
-    );
+    String translatedText;
+    try {
+      translatedText = googleTranslateClient.translate(
+          languages.get().sourceLanguage(),
+          languages.get().targetLanguage(),
+          refined.get()
+      );
+    } catch (Exception ex) {
+      translatedText = yandexTranslateClient.translate(
+          languages.get().sourceLanguage(),
+          languages.get().targetLanguage(),
+          refined.get()
+      );
+    }
     return new MessageOut(messageIn.chatId(), translatedText);
   }
 }

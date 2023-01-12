@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import tatbash.infrastructure.exception.YandexTranslateException;
+import tatbash.translation.yandex.translate.error.YandexTranslateErrorHandler;
 
 class YandexTranslateErrorHandlerTest {
   @Test
