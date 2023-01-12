@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
-import tatbash.infrastructure.rest.YandexTranslateErrorHandler;
+import tatbash.translation.google.error.GoogleTranslateErrorHandler;
+import tatbash.translation.yandex.translate.error.YandexTranslateErrorHandler;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,6 +45,7 @@ public class ApplicationConfig {
   RestTemplate googleTranslationRestTemplate(RestTemplateBuilder builder) {
     return builder
         .rootUri(this.googleTranslationProperties.url())
+        .errorHandler(new GoogleTranslateErrorHandler())
         .build();
   }
 }

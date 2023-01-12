@@ -1,18 +1,16 @@
-package tatbash.infrastructure.rest;
+package tatbash.translation.google.error;
 
 import static java.util.stream.Collectors.joining;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
-import tatbash.infrastructure.exception.YandexTranslateException;
+import tatbash.infrastructure.exception.GoogleTranslateException;
 
-public class YandexTranslateErrorHandler implements ResponseErrorHandler {
+public class GoogleTranslateErrorHandler implements ResponseErrorHandler {
   @Override
   public boolean hasError(ClientHttpResponse response) throws IOException {
     return response.getStatusCode().isError();
@@ -23,9 +21,13 @@ public class YandexTranslateErrorHandler implements ResponseErrorHandler {
     if (response.getStatusCode().isError()) {
       try (final var reader = new BufferedReader(new InputStreamReader(response.getBody(), StandardCharsets.UTF_8))) {
         final var body = reader.lines().collect(joining(""));
-        final var mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        final var error = mapper.readValue(body, YandexTranslateErrorResponse.class);
-        throw new YandexTranslateException(error.message());
+        final var errorMessage = """
+            Google API error:
+            HTTP Status: %d
+            Response body:
+            %s
+            """.formatted(response.getRawStatusCode(), body);
+        throw new GoogleTranslateException(errorMessage);
       }
     }
   }

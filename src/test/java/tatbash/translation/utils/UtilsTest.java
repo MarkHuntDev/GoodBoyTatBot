@@ -8,22 +8,42 @@ import static tatbash.translation.utils.Utils.unescapeQuotes;
 import static tatbash.translation.utils.Utils.unquote;
 
 import java.lang.reflect.Modifier;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class UtilsTest {
 
-  @Test
-  void should_return_quoted_string() {
-    final var actual = quote("example");
+  @ParameterizedTest
+  @MethodSource("quoteCandidates")
+  void should_return_quoted_string(String raw, String expected) {
+    final var actual = quote(raw);
     assertThat(actual)
-        .isEqualTo("\"example\"");
+        .isEqualTo(expected);
   }
 
-  @Test
+  private static Stream<Arguments> quoteCandidates() {
+    return Stream.of(
+        Arguments.of("example", "\"example\""),
+        Arguments.of("\"example\"", "\"\"example\"\"")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("unquoteCandidates")
   void should_return_unquoted_string() {
     final var actual = unquote("\"example\"");
     assertThat(actual)
         .isEqualTo("example");
+  }
+
+  private static Stream<Arguments> unquoteCandidates() {
+    return Stream.of(
+        Arguments.of("\"example\"", "example"),
+        Arguments.of("\"\"example\"\"", "\"example\"")
+    );
   }
 
   @Test
