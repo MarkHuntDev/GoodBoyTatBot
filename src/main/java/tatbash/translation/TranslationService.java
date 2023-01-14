@@ -38,6 +38,7 @@ public class TranslationService {
           refined.get()
       );
     } catch (Exception ex) {
+      log.error("Google Translate API Error", ex);
       translatedText = yandexTranslateClient.translate(
           languages.get().sourceLanguage(),
           languages.get().targetLanguage(),
