@@ -16,7 +16,7 @@ yandex:
 
 google:
   translation:
-    url: 'https://translate.googleapis.com/translate_a/single'
+    url: 'https://translate.googleapis.com'
 
 app:
   hashtags:

@@ -67,7 +67,8 @@ public class GoogleTranslateClient {
   }
 
   private ResponseEntity<Response> requestTranslation(MultiValueMap<String, String> params) {
-    return restTemplate.postForEntity("", new HttpEntity<>(params, new HttpHeaders()), Response.class);
+    return restTemplate.postForEntity("/translate_a/single",
+        new HttpEntity<>(params, new HttpHeaders()), Response.class);
   }
 
   private String extractTranslation(ResponseEntity<Response> response) {
