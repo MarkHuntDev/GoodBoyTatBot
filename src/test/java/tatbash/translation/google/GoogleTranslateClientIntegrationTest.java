@@ -48,6 +48,9 @@ class GoogleTranslateClientIntegrationTest {
   @Autowired
   private GoogleTranslateClient translateClient;
 
+  // todo: implement stress-test of GoogleTranslateClient that sends thousands of requests to real Google API
+  //       and uses user-agent rotation
+
   @Test
   void should_translate_successfully() {
     // given:

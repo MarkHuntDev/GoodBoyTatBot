@@ -41,6 +41,7 @@ public class GoogleTranslateClient {
     return unquote(unescapeQuotes(polluted.trim()));
   }
 
+  // todo: define params through HttpEntityBuilder
   private MultiValueMap<String, String> params(String sourceLanguageCode, String targetLanguageCode, String text) {
     final var params = new LinkedMultiValueMap<String, String>();
     params.add("client", "gtx");
